@@ -40,4 +40,14 @@
     canvas.style.height = '100%';
 </script>
 	
+<script>
+	var figure = $(".glslCanvas").hover( hoverVideo, hideVideo );
+	function hoverVideo(e) {  
+		$('glslCanvas', this).get(0).play(); 
+	}
+	function hideVideo(e) {
+		$('glslCanvas', this).get(0).pause(); 
+	}
+</script>
+	
 </html>
