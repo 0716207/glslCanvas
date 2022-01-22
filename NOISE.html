@@ -1,0 +1,1905 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlslCanvas | CMHsieh</title>
+	<link href="css/content.css" rel="stylesheet" type="text/css">
+	<link href="../images/sakura.ico" rel="shortcut icon" type="image/ico"/>
+	<!--js-->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
+	<script type="text/javascript" src="js/0602.js"></script>
+	<!--font awesome-->
+	<script src="https://kit.fontawesome.com/bade478ead.js" crossorigin="anonymous"></script>
+	<!-- Add fancyBox -->
+	<link rel="stylesheet" href="fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+	<script type="text/javascript" src="fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+</head>
+ 
+<body>
+<!---->
+<header>
+    <div class="Logo"><a href="index.html">CMHsieh</a></div>
+    <div class="menu"><i class="fas fa-bars"></i></div>
+</header>
+
+<!--nav-->
+<nav>
+    <ul>
+        <li><a href="ABOUT.html">ABOUT</a></li>
+        <li><a href="NOISE.html">NOISE</a></li>
+        <li><a href="CG.html">CG</a></li>
+        <li><a href="UE.html">UE</a></li>
+		<li><a href="LINK.html">LINK</a></li>
+    </ul>
+</nav>
+
+<!--section-->
+<section>    
+<br>
+<h2>Noise</h2>
+<p>
+	<br><br>
+</p>
+
+<div class="row">
+	<!--6_hatching-->
+    <div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="6_hatching.frag" target="_blank" title="hatching"><canvas class="glslCanvas" data-fragment-url="6_hatching.frag" width="800" height="600" data-textures="data/MonaLisa.jpg, data/hatch_0.jpg, data/hatch_1.jpg, data/hatch_2.jpg, data/hatch_3.jpg, data/hatch_4.jpg, data/hatch_5.jpg, data/pina.mp4"></canvas></a>
+		-->
+		
+		<a class="s2" href="6_hatching.frag" target="_blank" title="hatching"><canvas class="glslCanvas" data-fragment="// Author: CMH
+// Title: Learning Shaders
+
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+uniform sampler2D u_tex0; //MonaLisa
+uniform sampler2D u_tex1;
+uniform sampler2D u_tex2;
+uniform sampler2D u_tex3;
+uniform sampler2D u_tex4;
+uniform sampler2D u_tex5;
+uniform sampler2D u_tex6;
+uniform sampler2D u_tex7; //Pina
+
+
+
+void main()
+{
+    vec2 uv= gl_FragCoord.xy/u_resolution.xy;
+    vec2 vUv=fract(6.0*uv);                        //key
+    float shading= texture2D(u_tex7, uv).g; //取MonaLisa綠色版作為明亮值
+
+
+    vec4 c;
+                float step = 1. / 6.;
+                if( shading <= step ){   
+                    c = mix( texture2D( u_tex6, vUv ), texture2D( u_tex5, vUv ), 6. * shading );
+                }
+                if( shading > step && shading <= 2. * step ){
+                    c = mix( texture2D( u_tex5, vUv ), texture2D( u_tex4, vUv) , 6. * ( shading - step ) );
+                }
+                if( shading > 2. * step && shading <= 3. * step ){
+                    c = mix( texture2D( u_tex4, vUv ), texture2D( u_tex3, vUv ), 6. * ( shading - 2. * step ) );
+                }
+                if( shading > 3. * step && shading <= 4. * step ){
+                    c = mix( texture2D( u_tex3, vUv ), texture2D( u_tex2, vUv ), 6. * ( shading - 3. * step ) );
+                }
+                if( shading > 4. * step && shading <= 5. * step ){
+                    c = mix( texture2D( u_tex2, vUv ), texture2D( u_tex1, vUv ), 6. * ( shading - 4. * step ) );
+                }
+                if( shading > 5. * step ){
+                    c = mix( texture2D( u_tex1, vUv ), vec4( 1. ), 6. * ( shading - 5. * step ) );
+                }
+                
+     vec4 inkColor = vec4(0.0, 0.0, 1.0, 1.0);
+     vec4 src = mix( mix( inkColor, vec4( 1. ), c.r ), c, .5 );
+     gl_FragColor = src;
+
+
+    
+
+}
+
+" width="800" height="600" data-textures="data/MonaLisa.jpg, data/hatch_0.jpg, data/hatch_1.jpg, data/hatch_2.jpg, data/hatch_3.jpg, data/hatch_4.jpg, data/hatch_5.jpg, data/pina.mp4"></canvas></a>
+	</div>
+	
+	<!--9_pinaFBO-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="9_pinaFBO.frag" target="_blank" title="pinaFBO"><canvas class="glslCanvas" data-fragment-url="9_pinaFBO.frag" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="9_pinaFBO.frag" target="_blank" title="pinaFBO"><canvas class="glslCanvas" data-fragment="// Author: CMH
+// Title: Learning Shaders-FrameBuffer
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#if defined( BUFFER_0 )
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+uniform sampler2D u_tex0;
+uniform sampler2D u_tex1;
+uniform sampler2D u_buffer0;
+
+vec4 timelapseAverage(sampler2D src_c_img, sampler2D src_p_img, vec2 uv, float weight)
+{
+	vec4 A=texture2D(src_c_img, uv);
+	vec4 B=texture2D(src_p_img, uv);
+	return mix(A, B, weight);
+}
+
+void main() {
+    vec2 st = gl_FragCoord.xy/u_resolution.xy;				//screen coordinate
+    //vec3 color = texture2D(u_tex1, st).rgb;
+    //vec3 luma= vec3(0.21*color.r + 0.72*color.g + 0.07*color.b);  //perceptually relevant
+    //vec3 fbo = texture2D(u_buffer0, st).rgb;
+    
+    float blur= 0.999-(u_mouse.x/u_resolution.x)*0.199;
+    gl_FragColor = timelapseAverage(u_tex1, u_buffer0, st, blur);
+}
+
+
+" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+	
+	<!--10_matrixRain-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="10_matrixRain.frag" target="_blank" title="matrixRain"><canvas class="glslCanvas" data-fragment-url="10_matrixRain.frag" width="800" height="600" data-textures="data/Taipei101_1.jpg, data/pina.mp4"></canvas></a>
+		-->
+		
+		<a class="s2" href="10_matrixRain.frag" target="_blank" title="matrixRain"><canvas class="glslCanvas" data-fragment="// Author: Created by raja in 2014-05-01 
+// Title: Matrix Rain Shader https://www.shadertoy.com/view/lsXSDn
+
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+uniform sampler2D u_tex0;
+uniform sampler2D u_tex1;
+
+
+#define RAIN_SPEED 1.75 // Speed of rain droplets
+#define DROP_SIZE  5.0  // Higher value lowers, the size of individual droplets
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float rchar(vec2 outer, vec2 inner, float globalTime) {
+	//return float(rand(floor(inner * 2.0) + outer) > 0.9);
+	
+	vec2 seed = floor(inner * 4.0) + outer.y;
+	if (rand(vec2(outer.y, 23.0)) > 0.98) {
+		seed += floor((globalTime + rand(vec2(outer.y, 49.0))) * 3.0);
+	}
+	
+	return float(rand(seed) > 0.5);
+}
+
+void main() {
+
+	vec2 position = gl_FragCoord.xy / u_resolution.xy;
+	vec2 uv = vec2(position.x, position.y);
+    position.x /= u_resolution.x / u_resolution.y;
+	float globalTime = u_time * RAIN_SPEED;
+	
+	float scaledown = DROP_SIZE;
+	float rx = gl_FragCoord.x / (40.0 * scaledown);
+	float mx = 40.0*scaledown*fract(position.x * 30.0 * scaledown);
+	vec4 result;
+	
+	if (mx > 12.0 * scaledown) {
+		result = vec4(0.0);
+	} else 
+	{
+        float x = floor(rx);
+		float r1x = floor(gl_FragCoord.x / (15.0));
+		
+
+		float ry = position.y*600.0 + rand(vec2(x, x * 3.0)) * 100000.0 + globalTime* rand(vec2(r1x, 23.0)) * 120.0;
+		float my = mod(ry, 15.0);
+		if (my > 12.0 * scaledown) {
+			result = vec4(0.0);
+		} else {
+		
+			float y = floor(ry / 15.0);
+			
+			float b = rchar(vec2(rx, floor((ry) / 15.0)), vec2(mx, my) / 12.0, globalTime);
+			float col = max(mod(-y, 24.0) - 4.0, 0.0) / 20.0;
+			vec3 c = col < 0.8 ? vec3(0.0, col / 0.8, 0.0) : mix(vec3(0.0, 1.0, 0.0), vec3(1.0), (col - 0.8) / 0.2);
+			
+			result = vec4(c * b, 1.0)  ;
+		}
+	}
+	
+	position.x += 0.05;
+
+	scaledown = DROP_SIZE;
+	rx = gl_FragCoord.x / (40.0 * scaledown);
+	mx = 40.0*scaledown*fract(position.x * 30.0 * scaledown);
+	
+	if (mx > 12.0 * scaledown) {
+		result += vec4(0.0);
+	} else 
+	{
+        float x = floor(rx);
+		float r1x = floor(gl_FragCoord.x / (12.0));
+		
+
+		float ry = position.y*700.0 + rand(vec2(x, x * 3.0)) * 100000.0 + globalTime* rand(vec2(r1x, 23.0)) * 120.0;
+		float my = mod(ry, 15.0);
+		if (my > 12.0 * scaledown) {
+			result += vec4(0.0);
+		} else {
+		
+			float y = floor(ry / 15.0);
+			
+			float b = rchar(vec2(rx, floor((ry) / 15.0)), vec2(mx, my) / 12.0, globalTime);
+			float col = max(mod(-y, 24.0) - 4.0, 0.0) / 20.0;
+			vec3 c = col < 0.8 ? vec3(0.0, col / 0.8, 0.0) : mix(vec3(0.0, 1.0, 0.0), vec3(1.0), (col - 0.8) / 0.2);
+			
+			result += vec4(c * b, 1.0)  ;
+		}
+	}
+	
+	result = result * length(texture2D(u_tex1,uv).rgb) + 0.22 * vec4(0.,texture2D(u_tex1,uv).g,0.,1.);
+	if(result.b < 0.5)
+	result.b = result.g * 0.5 ;
+	gl_FragColor = result;
+}
+
+
+" width="800" height="600" data-textures="data/Taipei101_1.jpg, data/pina.mp4"></canvas></a>
+	</div>
+</div>
+
+<div class="row">
+	<!--11_raymarchTerrain-->
+    <div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="11_raymarchTerrain.frag" target="_blank" title="raymarchTerrain"><canvas class="glslCanvas" data-fragment-url="11_raymarchTerrain.frag" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="11_raymarchTerrain.frag" target="_blank" title="raymarchTerrain"><canvas class="glslCanvas" data-fragment="// Author:CMH
+// Title:20211023_glsl Breathing Terrain_v1(Raymarch).qtz
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+float iGlobalTime=u_time;                 //更改 shadertoy->glsl editor  
+vec2 iResolution=u_resolution;            //更改 shadertoy->glsl editor 
+vec2 iMouse=u_mouse.xy;                   //更改 shadertoy->glsl editor
+//vec2 fragCoord = gl_FragCoord.xy;         //更改
+
+
+
+//=== noise functions ===
+float hash11(float p) {
+    return fract(sin(p * 727.1)*43758.5453123); //亂數範圍 [0,1]
+}
+float hash12(vec2 p) {
+    float h = dot(p,vec2(127.1,311.7)); 
+    return fract(sin(h)*43758.5453123);     //亂數範圍 [0,1]
+}
+vec3 hash31(float p) {
+    vec3 h = vec3(1275.231,4461.7,7182.423) * p;    
+    return fract(sin(h)*43758.543123);      //亂數範圍 [0,1]
+}
+
+// 3d noise
+float noise_3(in vec3 p) {                  //亂數範圍 [0,1]
+    vec3 i = floor(p);
+    vec3 f = fract(p);  
+    vec3 u = f*f*(3.0-2.0*f);
+    
+    vec2 ii = i.xy + i.z * vec2(5.0);
+    float a = hash12( ii + vec2(0.0,0.0) );
+    float b = hash12( ii + vec2(1.0,0.0) );    
+    float c = hash12( ii + vec2(0.0,1.0) );
+    float d = hash12( ii + vec2(1.0,1.0) ); 
+    float v1 = mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
+    
+    ii += vec2(5.0);
+    a = hash12( ii + vec2(0.0,0.0) );
+    b = hash12( ii + vec2(1.0,0.0) );    
+    c = hash12( ii + vec2(0.0,1.0) );
+    d = hash12( ii + vec2(1.0,1.0) );
+    float v2 = mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
+        
+    return max(mix(v1,v2,u.z),0.0);
+}
+
+//=== glow functions ===
+float glow(float d, float str, float thickness){
+    return thickness / pow(d, str);
+}
+//=== 2d noise functions ===
+vec2 hash2( vec2 x )            //亂數範圍 [-1,1]
+{
+    const vec2 k = vec2( 0.3183099, 0.3678794 );
+    x = x*k + k.yx;
+    return -1.0 + 2.0*fract( 16.0 * k*fract( x.x*x.y*(x.x+x.y)) );
+}
+float gnoise( in vec2 p )       //亂數範圍 [-1,1]
+{
+    vec2 i = floor( p );
+    vec2 f = fract( p );
+    
+    vec2 u = f*f*(3.0-2.0*f);
+
+    return mix( mix( dot( hash2( i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ), 
+                            dot( hash2( i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),
+                         mix( dot( hash2( i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ), 
+                            dot( hash2( i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);
+}
+float fbm(in vec2 uv)       //亂數範圍 [-1,1] 
+{
+    float f;                //fbm - fractal noise (4 octaves)
+    //mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
+    float m=2.0;
+    f  = gnoise( uv ); uv = m*uv;         
+    f += 0.5*gnoise( uv ); uv = m*uv;
+    f += 0.25*gnoise( uv ); uv = m*uv;
+    f += 0.125*gnoise( uv ); uv = m*uv;
+    return f;
+}
+
+float fbm_2(in vec2 uv)     //亂數範圍 [-1,1]
+{
+    float f;                //fbm - fractal noise (4 octaves)
+    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
+    f   = 0.5000*gnoise( uv ); uv = m*uv;         
+    f += 0.2500*gnoise( uv ); uv = m*uv;
+    f += 0.1250*gnoise( uv ); uv = m*uv;
+    f += 0.0625*gnoise( uv ); uv = m*uv;
+    return f;
+}
+
+//=== distance functions ===
+float mapCircle(vec3 p)
+{
+vec3 q= p+vec3(0.,-0.35,1.0); //調整範圍，小心！
+return (length(q) - 0.3);
+}
+
+float mapTerrain(vec3 p)
+{
+float h=max(fbm(4.0*p.xz), 0.0)*0.4-0.3; //處理中???? 地平面以-0.3為基準，
+return (p.y-h);
+}
+
+//=== boolean operations ===
+float boolUnion(float a,float b) { return min(a,b); }
+float boolIntersect(float a,float b) { return max(a,b); }
+float boolSub(float a,float b) { return max(a,-b); }
+
+// smooth operations. thanks to iq
+float boolSmoothIntersect(float a, float b, float k ) {
+    float h = clamp(0.5+0.5*(b-a)/k, 0.0, 1.0);
+    return mix(a,b,h) + k*h*(1.0-h);
+}
+float boolSmoothSub(float a, float b, float k ) {
+    return boolSmoothIntersect(a,-b,k);
+}
+
+// === ===
+float trace(vec3 o, vec3 r)
+{
+float t=0.0;
+for (int i=0; i<32; ++i)
+{
+    vec3 p= o+r*t;
+    float d4=mapCircle(p);
+    float d5= mapTerrain(p);//工作中
+    float d= boolUnion(d4, d5);
+    //float d= d5;
+    t += d*0.3;
+
+    }
+return t;
+}       // i<j，j影響銳利度
+
+// ================
+void main()
+{
+vec2 uv = gl_FragCoord.xy/iResolution.xy;
+uv = uv*2.0-1.0;
+uv.x*= iResolution.x/iResolution.y;
+//uv.y*=-1.0; //顛倒校正
+
+vec3 r=normalize(vec3(uv, -1.0));//越遠離-1，ray越靠攏，可視範圍越窄，圓越大，想像鏡頭廣度
+//vec3 o= vec3(0.0, 0.0, iGlobalTime*0.05);//越遠離r，鏡頭遠離Zoom out，圓越小，想像鏡頭距離
+vec3 o= vec3(0.0, 0.0, 0.0);
+float t = trace(o, r);
+
+//動態呼吸
+float breathing=sin(2.0*3.14*iGlobalTime/5.0)*0.5+0.2;
+//float t1=glow(t, 0.4-0.1*breathing, 1.5);
+float t1=glow(t, 1.2-0.1*breathing, 0.3);
+
+//亂數作用雲霧
+float fog= fbm_2(0.6*uv+vec2(-0.2*iGlobalTime, -0.02*iGlobalTime))*0.5+0.3;
+
+gl_FragColor = vec4(vec3(t), 1.0);
+//gl_FragColor = vec4(vec3(t1), 1.0); //*vec3(1.0, 0.5, 0.25)
+//gl_FragColor = vec4(vec3(fog), 1.0); //*vec3(1.0, 0.5, 0.25)
+//gl_FragColor = vec4(vec3(t1+fog), 1.0); //導致輪廓浮動
+//gl_FragColor = vec4(vec3(mix(t1,fog,1.0-t1)), 1.0); //修正輪廓浮動
+
+}
+
+" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+	
+	<!--11_breathingGlow-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="11_breathingGlow.frag" target="_blank" title="breathingGlow"><canvas class="glslCanvas" data-fragment-url="11_breathingGlow" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="11_breathingGlow.frag" target="_blank" title="breathingGlow"><canvas class="glslCanvas" data-fragment="// Author:CMH
+// Title:BreathingGlow+noise
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+float glow(float d, float str, float thickness){
+    return thickness / pow(d, str);
+}
+
+vec2 hash2( vec2 x )            //亂數範圍 [-1,1]
+{
+    const vec2 k = vec2( 0.3183099, 0.3678794 );
+    x = x*k + k.yx;
+    return -1.0 + 2.0*fract( 16.0 * k*fract( x.x*x.y*(x.x+x.y)) );
+}
+float gnoise( in vec2 p )       //亂數範圍 [-1,1]
+{
+    vec2 i = floor( p );
+    vec2 f = fract( p );
+    
+    vec2 u = f*f*(3.0-2.0*f);
+
+    return mix( mix( dot( hash2( i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ), 
+                            dot( hash2( i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),
+                         mix( dot( hash2( i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ), 
+                            dot( hash2( i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);
+}
+#define Use_Perlin
+//#define Use_Value
+float noise( in vec2 p )        //亂數範圍 [-1,1]
+{
+#ifdef Use_Perlin    
+return gnoise(p);   //gradient noise
+#elif defined Use_Value
+return vnoise(p);       //value noise
+#endif    
+return 0.0;
+}
+float fbm(in vec2 uv)       //亂數範圍 [-1,1]
+{
+    float f;                                                //fbm - fractal noise (4 octaves)
+    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
+    f   = 0.5000*noise( uv ); uv = m*uv;          
+    f += 0.2500*noise( uv ); uv = m*uv;
+    f += 0.1250*noise( uv ); uv = m*uv;
+    f += 0.0625*noise( uv ); uv = m*uv;
+    return f;
+}
+
+
+void main() {
+    vec2 uv = gl_FragCoord.xy/u_resolution.xy;
+    uv.x *= u_resolution.x/u_resolution.y;
+    uv= uv*2.0-1.0;
+    
+    //陰晴圓缺
+    float pi=3.14159;
+    float theta=2.0*pi*u_time/8.0;
+    vec2 point=vec2(sin(theta), cos(theta));
+    float dir= dot(point, (uv))+0.55;
+    
+    //亂數作用雲霧
+    float fog= fbm(0.4*uv+vec2(-0.1*u_time, -0.02*u_time))*0.6+0.1;
+
+    //定義圓環
+    float dist = length(uv);
+    float circle_dist = abs(dist-0.512);                                //光環大小
+    
+    //動態呼吸
+    float breathing=sin(2.0*u_time/5.0*pi)*0.5+0.2;                     //option1
+    //float breathing=(exp(sin(u_time/2.0*pi)) - 0.36787944)*0.42545906412;         //option2 錯誤
+     //float breathing=(exp(sin(u_time/2.0*pi)) - 0.36787944)*0.42545906412;                //option2 正確
+    float strength =(0.2*breathing+0.180);          //[0.2~0.3]         //光暈強度加上動態時間營造呼吸感
+    float thickness=(0.1*breathing+0.084);          //[0.1~0.2]         //光環厚度 營造呼吸感
+    float glow_circle = glow(circle_dist, strength, thickness);
+    gl_FragColor = vec4((vec3(glow_circle)+fog)*dir*vec3(1.0, 0.5, 0.25),1.0);
+}
+
+
+
+
+
+
+
+/*
+// Author:CMH
+// Title:BreathingGlow
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+float glow(float d, float str, float thickness){
+    return thickness / pow(d, str);
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy/u_resolution.xy;
+    uv.x *= u_resolution.x/u_resolution.y;
+    uv= uv*2.0-1.0;
+    
+    //陰晴圓缺
+    float pi=3.14159;
+    float theta=2.0*pi*u_time/2.144;
+    vec2 point=vec2(sin(theta), cos(theta));
+    float dir= dot(point, normalize(uv));
+
+    //定義圓環
+    float dist = length(uv);
+    float circle_dist = abs(dist-0.512);								//光環大小
+    
+    //動態呼吸
+    //float breathing=sin(u_time/2.0*pi)*0.5+0.5;						//option1
+    //float breathing=exp(sin(u_time/2.0*pi) - 0.36787944)*0.42545906412; 			//option2 錯誤
+     float breathing=(exp(sin(u_time/2.0*pi)) - 0.36787944)*0.42545906412; 			//option2 正確
+    float strength =(0.2*breathing*dir+0.180);			//[0.2~0.3]			//光暈強度加上動態時間營造呼吸感
+    float thickness=(0.1*breathing+0.084);			//[0.1~0.2]			//光環厚度 營造呼吸感
+    float glow_circle = glow(circle_dist, strength, thickness);
+    gl_FragColor = vec4(vec3(glow_circle)*vec3(1.0, 0.5, 0.25),1.0);
+}
+*/
+" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+	
+	<!--13_glslParticleFBO-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="13_glslParticleFBO.frag" target="_blank" title="glslParticleFBO"><canvas class="glslCanvas" data-fragment-url="13_glslParticleFBO.frag" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="13_glslParticleFBO.frag" target="_blank" title="glslParticleFBO"><canvas class="glslCanvas" data-fragment="// Author: Created by FabriceNeyret2 in 2017-04-03
+// Title: maze worms / graffitis 3b @ shadertoy
+// 20200624_glsl Particle_v2.qtz
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#if defined( BUFFER_0 )
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+float iTime=u_time;			              //更改 shadertoy->glsl editor  
+vec2 iResolution=u_resolution;		      //更改 shadertoy->glsl editor 
+vec2 iMouse=u_mouse.xy;                   //更改 shadertoy->glsl editor
+//vec2 fragCoord = gl_FragCoord.xy;       //更改
+uniform sampler2D u_buffer0;
+
+
+#define CS(a)  vec2(cos(a),sin(a))
+#define rnd(x) ( 2.* fract(456.68*sin(1e3*x+mod(iDate.w,100.))) -1.) // NB: mod(t,1.) for less packed pattern
+#define T(U1) texture2D(u_buffer0, (U1)/R)  //FBO，持續更新粒子狀態
+
+float glow(float d, float str, float thickness){
+    return thickness / pow(d, str);
+}
+
+const float r = 1.5, N = 50.; // width , number of worms
+
+void main()
+{
+    vec4 iDate= vec4(iTime);
+    vec2 U = gl_FragCoord.xy;           //input 
+    vec2 R = iResolution.xy;
+    vec4 O;                         //output
+    
+    //不懂！利用R定值讀取FBO,讀到最右下圖檔pixel訊息，紅色色版為零,
+    if (T(R).x==0.) { U = abs(U/R*2.-1.); O  = vec4(max(U.x,U.y)>1.-r/R.y); O.w=0.; gl_FragColor=O; return;} // track window resize
+
+//--STEP1.初始粒子位置於第一列--------
+    // 1st column store worms state.
+    if (U.y==.5 && T(U).w==0.) {                           // initialize heads state: P, a, t
+        O = vec4( R/2. + R/2.4* vec2(rnd(U.x),rnd(U.x+.1)) , 3.14 * rnd(U.x+.2), 1); //O.z儲存粒子差異化亂數, O.w表示active, 座標系統以window尺寸
+        if (T(O.xy).x>0.) O.w = 0.;                        // invalid start position //若該起始點已有粒子，則不畫。    
+        gl_FragColor=O; return;
+    } 
+    
+//--STEP2.依據第一列粒子們，著色每一個像素
+    // Other columns do the drawing.
+    O = T(U);//讀取之前色彩結果，注意此時O是color data(yes)還是position data(no)
+    //Drawing! 
+    //--重要！ x<N需改成x<=N
+    //--重要！*奇特思考方法！不確定效能是否合理，每個待更新的像素，與粒子們比較位置，以距離遠近決定著色方式！
+    //讀取第一列由左至右的粒子資訊P,若P.w粒子生存,以length(P.xy-U)著色, P的資訊以座標系統是以pixel為單位
+    for (float x=.5; x<=N; x++) {                          // --- draw heads
+
+        vec4 P = T(vec2(x,.5));                            // head state: P, a, t 
+        //if (P.w>0.) O += smoothstep(r,0., length(P.xy-U))  // draw head if active
+        //                 *(.4);   // coloring scheme (exp(-0.02*P.w))
+        if (P.w>0.) O += glow(length( (P.xy-U)/R ), 1.4, 0.004)*(0.002)*vec4(0.9, 0.4, 0.1, 0.2);
+    }
+
+//--STEP3.像素著色後，更新第一列粒子們新位置
+    //U以整數pixel為單位，需注意特殊用法，第一列為0.5，第二列為1.5
+    if (U.y==.5) {                                         // --- head programms: worm strategy
+           //讀取第一列粒子狀態指定為P，P.xy表示position, P.z儲存粒子差異化亂數, P.w表示粒子active
+        vec4 P = T(U);                                     // head state: P, a, t 
+        if (P.w>0.) {                                      // if active
+            float a = P.z;                             // a=每個粒子旋轉角度 per particle
+            a+=2.1/P.w;
+            a+=0.001;
+            vec2 newPos= P.xy+ CS(a);
+            O = vec4(newPos,mod(a,6.2832),P.w+1.);         // move head, P.w儲存每個粒子的生命age
+            if  ( T(P.xy+(r+2.)*CS(a)).w > 0.2 )  { O.w = 0.;} // 若碰撞其它粒子，生命age歸零                      
+        }
+    }
+    
+   
+  //if (iMouse.w > 0. && distance(iMouse.xy, U) < 50.) O = vec4(0.); // painting
+  gl_FragColor=O;
+}
+
+
+
+
+
+
+" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+</div>
+
+<div class="row">
+	<!--13_glslParticleMona-->
+    <div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="13_glslParticleMona.frag" target="_blank" title="glslParticleMona"><canvas class="glslCanvas" data-fragment-url="13_glslParticleMona.frag" width="800" height="600" data-textures="data/MonaLisa.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="13_glslParticleMona.frag" target="_blank" title="glslParticleMona"><canvas class="glslCanvas" data-fragment="// Author: Created by FabriceNeyret2 in 2017-04-03
+// Title: maze worms / graffitis 3b @ shadertoy
+// 20200624_glsl Particle_v5A(曲線圖).qtz
+
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#if defined( BUFFER_0 )
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+float iTime=u_time;                       //更改 shadertoy->glsl editor  
+vec2 iResolution=u_resolution;            //更改 shadertoy->glsl editor 
+vec2 iMouse=u_mouse.xy;                   //更改 shadertoy->glsl editor
+//vec2 fragCoord = gl_FragCoord.xy;       //更改
+uniform sampler2D u_buffer0;
+uniform sampler2D u_tex0;                 //更改  Target DensityMap
+uniform sampler2D u_tex1;                 //更改  Target MotionMap
+
+
+#define CS(a)  vec2(cos(a),sin(a))
+#define rnd(x) ( 2.* fract(456.68*sin(1e3*x+mod(iDate.w,100.))) -1.) // NB: mod(t,1.) for less packed pattern //亂數範圍 [-1,1]
+#define T(U1) texture2D(u_buffer0, (U1)/R)  //FBO，持續更新粒子狀態
+#define M(U2) texture2D(u_tex1, (U2)/R)  //初始照片，以MotionMap作為
+#define D(U2) texture2D(u_tex0, (U2)/R)  //初始照片，以Density作為
+
+
+float glow(float d, float str, float thickness){
+    return thickness / pow(d, str);
+}
+vec2 hash2( vec2 x )            //亂數範圍 [-1,1]
+{
+    const vec2 k = vec2( 0.3183099, 0.3678794 );
+    x = x*k + k.yx;
+    return -1.0 + 2.0*fract( 16.0 * k*fract( x.x*x.y*(x.x+x.y)) );
+}
+
+float gnoise( in vec2 p )       //亂數範圍 [-1,1]
+{
+    vec2 i = floor( p );
+    vec2 f = fract( p );
+    
+    vec2 u = f*f*(3.0-2.0*f);
+
+    return mix( mix( dot( hash2( i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ), 
+                            dot( hash2( i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),
+                         mix( dot( hash2( i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ), 
+                            dot( hash2( i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);
+}
+
+//Randomness code from Martin, here: https://www.shadertoy.com/view/XlfGDS
+float Random_Final(vec2 uv, float seed)         //亂數範圍 [-1,1]
+{
+    float fixedSeed = abs(seed) + 1.0;
+    float x = dot(uv, vec2(12.9898,78.233) * fixedSeed);
+    return 2.*fract(sin(x) * 43758.5453)-1.;
+}
+
+
+/////////////////////////////////
+const float r = 3.5, N = 100.; // width , number of worms
+
+void main()
+{
+    vec4 iDate= vec4(iTime);
+    vec2 U = gl_FragCoord.xy;           //input 
+    vec2 R = iResolution.xy;
+    vec4 O;                         //output
+    
+//不懂！利用R定值讀取FBO,讀到最右下圖檔pixel訊息，紅色色版為零,
+    if (T(R).x==0.) { U = abs(U/R*2.-1.); O  = vec4(max(U.x,U.y)>1.-r/R.y); O.w=0.; gl_FragColor=O; return;} // track window resize
+
+//--STEP1.初始粒子位置於第一列--------
+    // 1st column store worms state.
+    if (U.y==.5 && T(U).w==0.) {                           // initialize heads state: P, a, t
+        //O = vec4( R/2. + R/2.4* vec2(rnd(U.x),rnd(U.x+.1)) , 3.14 * rnd(U.x+.2), 1); //O.z儲存粒子差異化亂數, O.w表示active, 座標系統以window尺寸
+        O = vec4( R/2. + R/2.4* vec2(Random_Final(U.xy, iTime),Random_Final(U.xy, iTime+1.11)) , 3.14 * rnd(U.x+.2), 1); //範圍[800x600]
+        
+        //設定生長條件
+        //若該起始點已有舊粒子，則不畫。//導致無法新生粒子，尤其光暈粒子即使消失後，依然佔有領土。改成threshold
+        //if (T(O.xy).x>0.) O.w = 0.;                        // invalid start position
+        if (D(O.xy).g<0.25) O.w = 0.;               // 亮的地方產生粒子，進入暗的地方則死亡
+        gl_FragColor=O; return;
+    } 
+    
+//--STEP2.依據第一列粒子們，著色每一個像素
+    // Other columns do the drawing.
+    O = T(U);//讀取之前色彩結果，注意此時O是color data(yes)還是position data(no)
+    //Drawing! 
+    //--重要！ x<N需改成x<=N
+    //--重要！*奇特思考方法！不確定效能是否合理，每個待更新的像素，與粒子們比較位置，以距離遠近決定著色方式！
+    //讀取第一列由左至右的粒子資訊P,若P.w粒子生存,以length(P.xy-U)著色, P的資訊以座標系統是以pixel為單位
+    for (float x=.5; x<=N; x++) {                          // --- draw heads
+
+        vec4 P = T(vec2(x,.5));                            // head state: P, a, t 
+        
+        //畫法一 若有乘以P.w，畫筆隨粒子生命增長而變淡
+        //if (P.w>0.) O += smoothstep(r,0., length(P.xy-U))  // draw head if active
+        //                 *(.4)*(exp(-0.02*P.w))*vec4(0.9, 0.4, 0.1, 0.2);      // coloring scheme (exp(-0.02*P.w))
+        //畫法二 持續累加
+        if (P.w>0.) O += glow(length( (P.xy-U)/R ), 1.4, 0.001)*(0.001)*vec4(0.9, 0.4, 0.1, 0.2);
+        
+        //畫法三 會消失，光暈粒子即便消失，領土還是被佔據無法產生新粒子
+        /*if (P.w>0.) {        
+        vec4 newO= glow(length( (P.xy-U)/R ), 1.4, 0.06)*(0.8)*vec4(0.9, 0.4, 0.1, 0.2);
+        O = mix(newO, O, 0.999);    //殘影比例：0.999 or 0.9999
+        }*/
+
+    }
+
+//--STEP3.像素著色後，更新第一列粒子們新位置
+    //U以整數pixel為單位，需注意特殊用法，第一列為0.5，第二列為1.5
+    if (U.y==.5) {                                         // --- head programms: worm strategy
+           //讀取第一列粒子狀態指定為P，P.xy表示position, P.z儲存粒子差異化亂數, P.w表示粒子active
+        vec4 P = T(U);                                     // head state: P, a, t 
+        if (P.w>0.) {                                      // if active
+            float a = P.z;                             // a=每個粒子旋轉角度 per particle
+            a+=2.1/P.w;                                //值大曲度大：4.0初始圈數多,2.0螺旋,0.5小勾,0.1直線 
+            a+=0.01;
+            
+            //Taget Image作用。待處理           
+            vec2 V = (-1.0)*M(P.xy).xy;             //讀取MotionMap資訊的RG色版，分別代表XY軸速度
+            float D = D(P.xy).g+(0.0*rnd(iTime));       //讀取DensityMap資訊的G色版
+            //，加上亂數有關鍵性影響!
+          
+            //float rot=atan(V.x, V.y);
+           //float area=smoothstep(0.05, 0.15, length(V.xy));
+            
+            //vec2 newPos= P.xy+ 0.*V.xy+ 1.*CS(3.28*gnoise(0.01*P.xy));  //target image
+            vec2 newPos= P.xy+ 0.*V.xy+ 1.*CS(3.28*gnoise(1.01*P.xy));  //target image
+            //vec2 newPos= P.xy+ CS(a);                         //parametric
+            //vec2 newPos= P.xy+ 4.0*CS(3.14 * rnd(U.x));   //random walk
+            //vec2 newPos= P.xy+ CS(3.14*gnoise(0.05*P.xy));//perlin noise
+            //vec2 newPos= P.xy+ CS(3.14*gnoise(0.05*P.xy))+ 2.0*CS(3.14 * rnd(U.x));//perlin noise+random
+      
+            O = vec4(newPos,mod(a,6.2832),P.w+1.);         // move head, P.w儲存每個粒子的生命age
+            
+            //設定死亡條件
+            if  ( O.x<0.|| O.x>R.x || O.y<0.|| O.y>R.y )  { O.w = 0.;} // 若超過邊界，生命age歸零
+            if  ( T(P.xy+(r+2.)*CS(a)).w > 0.2 )  { O.w = 0.;} // 若碰撞其它粒子，生命age歸零            
+            //if ( length(V)<0.01 ) { O.w = 0.; V=vec2(0.0);} //速度過小，生命age歸零
+            if ( D< 0.3) { O.w = 0.;}                //判定初始位置若過於明亮，生命age歸零   
+        }
+    }
+    
+   
+  //if (iMouse.w > 0. && distance(iMouse.xy, U) < 50.) O = vec4(0.); // painting
+  //O.w=1.0;    //需注意parametric模式會導致靜止不動
+  gl_FragColor=O;
+}
+" width="800" height="600" data-textures="data/MonaLisa.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+	
+	<!--13_glslParticleMonaDyno-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="13_glslParticleMonaDyno.frag" target="_blank" title="glslParticleMonaDyno"><canvas class="glslCanvas" data-fragment-url="13_glslParticleMonaDyno" width="800" height="600" data-textures="data/MonaLisa.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="13_glslParticleMonaDyno.frag" target="_blank" title="glslParticleMonaDyno"><canvas class="glslCanvas" data-fragment="// Author: Created by FabriceNeyret2 in 2017-04-03
+// Title: maze worms / graffitis 3b @ shadertoy
+// 20200624_glsl Particle_v5B(動態成像).qtz
+
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#if defined( BUFFER_0 )
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+float iTime=u_time;                       //更改 shadertoy->glsl editor  
+vec2 iResolution=u_resolution;            //更改 shadertoy->glsl editor 
+vec2 iMouse=u_mouse.xy;                   //更改 shadertoy->glsl editor
+//vec2 fragCoord = gl_FragCoord.xy;       //更改
+uniform sampler2D u_buffer0;
+uniform sampler2D u_tex0;                 //更改  Target DensityMap
+uniform sampler2D u_tex1;                 //更改  Target MotionMap
+
+
+#define CS(a)  vec2(cos(a),sin(a))
+#define rnd(x) ( 2.* fract(456.68*sin(1e3*x+mod(iDate.w,100.))) -1.) // NB: mod(t,1.) for less packed pattern //亂數範圍 [-1,1]
+#define T(U1) texture2D(u_buffer0, (U1)/R)  //FBO，持續更新粒子狀態
+#define M(U2) texture2D(u_tex1, (U2)/R)  //初始照片，以MotionMap作為
+#define D(U2) texture2D(u_tex0, (U2)/R)  //初始照片，以Density作為
+
+
+float glow(float d, float str, float thickness){
+    return thickness / pow(d, str);
+}
+vec2 hash2( vec2 x )            //亂數範圍 [-1,1]
+{
+    const vec2 k = vec2( 0.3183099, 0.3678794 );
+    x = x*k + k.yx;
+    return -1.0 + 2.0*fract( 16.0 * k*fract( x.x*x.y*(x.x+x.y)) );
+}
+
+float gnoise( in vec2 p )       //亂數範圍 [-1,1]
+{
+    vec2 i = floor( p );
+    vec2 f = fract( p );
+    
+    vec2 u = f*f*(3.0-2.0*f);
+
+    return mix( mix( dot( hash2( i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ), 
+                            dot( hash2( i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),
+                         mix( dot( hash2( i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ), 
+                            dot( hash2( i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);
+}
+
+//Randomness code from Martin, here: https://www.shadertoy.com/view/XlfGDS
+float Random_Final(vec2 uv, float seed)         //亂數範圍 [-1,1]
+{
+    float fixedSeed = abs(seed) + 1.0;
+    float x = dot(uv, vec2(12.9898,78.233) * fixedSeed);
+    return 2.*fract(sin(x) * 43758.5453)-1.;
+}
+
+
+/////////////////////////////////
+const float r = 1.5, N = 30.; // width , number of worms
+
+void main()
+{
+    vec4 iDate= vec4(iTime);
+    vec2 U = gl_FragCoord.xy;           //input 
+    vec2 R = iResolution.xy;
+    vec4 O;                         //output
+    
+//不懂！利用R定值讀取FBO,讀到最右下圖檔pixel訊息，紅色色版為零,
+    if (T(R).x==0.) { U = abs(U/R*2.-1.); O  = vec4(max(U.x,U.y)>1.-r/R.y); O.w=0.; gl_FragColor=O; return;} // track window resize
+
+//--STEP1.初始粒子位置於第一列--------
+    // 1st column store worms state.
+    if (U.y==.5 && T(U).w==0.) {                           // initialize heads state: P, a, t
+        //O = vec4( R/2. + R/2.4* vec2(rnd(U.x),rnd(U.x+.1)) , 3.14 * rnd(U.x+.2), 1); //O.z儲存粒子差異化亂數, O.w表示active, 座標系統以window尺寸
+        O = vec4( R/2. + R/2.4* vec2(Random_Final(U.xy, iTime),Random_Final(U.xy, iTime+1.11)) , 3.14 * rnd(U.x+.2), 1); //範圍[800x600]
+        
+        //設定生長條件
+        //若該起始點已有舊粒子，則不畫。//導致無法新生粒子，尤其光暈粒子即使消失後，依然佔有領土。改成threshold
+        //if (T(O.xy).x>0.) O.w = 0.;                        // invalid start position
+        if (D(O.xy).g<0.35) O.w = 0.;               // 亮的地方產生粒子，進入暗的地方則死亡
+        gl_FragColor=O; return;
+    } 
+    
+//--STEP2.依據第一列粒子們，著色每一個像素
+    // Other columns do the drawing.
+    O = T(U);//讀取之前色彩結果，注意此時O是color data(yes)還是position data(no)
+    //Drawing! 
+    //--重要！ x<N需改成x<=N
+    //--重要！*奇特思考方法！不確定效能是否合理，每個待更新的像素，與粒子們比較位置，以距離遠近決定著色方式！
+    //讀取第一列由左至右的粒子資訊P,若P.w粒子生存,以length(P.xy-U)著色, P的資訊以座標系統是以pixel為單位
+    for (float x=.5; x<=N; x++) {                          // --- draw heads
+
+        vec4 P = T(vec2(x,.5));                            // head state: P, a, t 
+        
+        //畫法一 若有乘以P.w，畫筆隨粒子生命增長而變淡
+        //if (P.w>0.) O += smoothstep(r,0., length(P.xy-U))  // draw head if active
+        //                 *(.4)*(exp(-0.02*P.w))*vec4(0.9, 0.4, 0.1, 0.2);    // coloring scheme (exp(-0.02*P.w))
+        //畫法二 持續累加
+        //if (P.w>0.) O += glow(length( (P.xy-U)/R ), 1.4, 0.001)*(0.001)*vec4(0.9, 0.4, 0.1, 0.2);
+        
+        //畫法三 會消失，光暈粒子即便消失，領土還是被佔據無法產生新粒子
+        if (P.w>0.) {        
+        vec4 newO= glow(length( (P.xy-U)/R ), 1.2, 0.08)*(0.8)*vec4(0.9, 0.4, 0.1, 0.2);
+        //O = mix(newO, O, 0.999);    //殘影比例：0.999 or 0.9999
+            float duree=-cos(2.0*u_time/60.0*3.14159)*0.00095+0.999;
+            O = mix(newO, O, duree);
+        }
+
+    }
+
+//--STEP3.像素著色後，更新第一列粒子們新位置
+    //U以整數pixel為單位，需注意特殊用法，第一列為0.5，第二列為1.5
+    if (U.y==.5) {                                         // --- head programms: worm strategy
+           //讀取第一列粒子狀態指定為P，P.xy表示position, P.z儲存粒子差異化亂數, P.w表示粒子active
+        vec4 P = T(U);                                     // head state: P, a, t 
+        if (P.w>0.) {                                      // if active
+            float a = P.z;                             // a=每個粒子旋轉角度 per particle
+            a+=2.1/P.w;                                //值大曲度大：4.0初始圈數多,2.0螺旋,0.5小勾,0.1直線 
+            a+=0.01;
+            
+            //Taget Image作用。待處理           
+            vec2 V = (-1.0)*M(P.xy).xy;             //讀取MotionMap資訊的RG色版，分別代表XY軸速度
+            float D = D(P.xy).g+(0.3*rnd(iTime));       //讀取DensityMap資訊的G色版
+            //，加上亂數有關鍵性影響!
+          
+            //float rot=atan(V.x, V.y);
+           //float area=smoothstep(0.05, 0.15, length(V.xy));
+            
+            //vec2 newPos= P.xy+ 0.*V.xy+ 1.*CS(6.28*gnoise(0.11*P.xy));  //target image
+            vec2 newPos= P.xy+ CS(a);                       //parametric
+            //vec2 newPos= P.xy+ 4.0*CS(3.14 * rnd(U.x));   //random walk
+            //vec2 newPos= P.xy+ CS(3.14*gnoise(0.05*P.xy));//perlin noise
+            //vec2 newPos= P.xy+ CS(3.14*gnoise(0.05*P.xy))+ 2.0*CS(3.14 * rnd(U.x));//perlin noise+random
+      
+            O = vec4(newPos,mod(a,6.2832),P.w+1.);         // move head, P.w儲存每個粒子的生命age
+            
+            //設定死亡條件
+            if  ( O.x<0.|| O.x>R.x || O.y<0.|| O.y>R.y )  { O.w = 0.;} // 若超過邊界，生命age歸零
+            if  ( T(P.xy+(r+2.)*CS(a)).w > 0.2 )  { O.w = 0.;} // 若碰撞其它粒子，生命age歸零            
+            //if ( length(V)<0.01 ) { O.w = 0.; V=vec2(0.0);} //速度過小，生命age歸零
+            if ( D< 0.3)    { O.w = 0.;}                //判定初始位置若過於明亮，生命age歸零   
+        }
+    }
+    
+   
+  //if (iMouse.w > 0. && distance(iMouse.xy, U) < 50.) O = vec4(0.); // painting
+  //O.w=1.0;    //需注意parametric模式會導致靜止不動
+  gl_FragColor=O;
+}
+
+
+
+
+
+" width="800" height="600" data-textures="data/MonaLisa.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+	
+	<!--14_glslFluid-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="14_glslFluid.frag" target="_blank" title="glslFluid"><canvas class="glslCanvas" data-fragment-url="14_glslFluid.frag" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="14_glslFluid.frag" target="_blank" title="glslFluid"><canvas class="glslCanvas" data-fragment="
+// Author:  nimitz 2018 (twitter: @stormoid), https://www.shadertoy.com/view/4tGfDW
+// Title: Chimera's Breath, 20200415_glsl Fluid_v1B(校正滑鼠問題).qtz
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+float iTime=u_time;                       //更改 shadertoy->glsl editor  
+vec2 iResolution=u_resolution;            //更改 shadertoy->glsl editor 
+vec4 iMouse=vec4(u_mouse.xy, 1.0, 1.0);   //更改 shadertoy->glsl editor
+//vec2 fragCoord = gl_FragCoord.xy;       //更改
+//uniform sampler2D iChannel0;            //更改
+uniform sampler2D u_buffer0;
+uniform sampler2D u_buffer1;
+
+
+//原始出處https://www.shadertoy.com/view/4tGfDW
+//Chimera's Breath
+//by nimitz 2018 (twitter: @stormoid)
+
+/*
+    The main interest here is the addition of vorticity confinement with the curl stored in
+    the alpha channel of the simulation texture (which was not used in the paper)
+    this in turns allows for believable simulation of much lower viscosity fluids.
+    Without vorticity confinement, the fluids that can be simulated are much more akin to
+    thick oil.
+    
+    Base Simulation based on the 2011 paper: Simple and fast fluids
+    (Martin Guay, Fabrice Colin, Richard Egli)
+    (https://hal.inria.fr/inria-00596050/document)
+
+    The actual simulation only requires one pass, Buffer A, B and C are just copies 
+    of each other to increase the simulation speed (3 simulation passes per frame)
+    and Buffer D is drawing colors on the simulated fluid 
+    (could be using particles instead in a real scenario)
+*/
+
+#define dt 0.15
+#define USE_VORTICITY_CONFINEMENT
+#define MOUSE_ONLY
+
+//Recommended values between 0.03 and 0.2
+//higher values simulate lower viscosity fluids (think billowing smoke)
+#define VORTICITY_AMOUNT 0.11
+
+float mag2(vec2 p){return dot(p,p);}
+vec2 point1(float t) {
+    t *= 0.62;
+    return vec2(0.12,0.5 + sin(t)*0.2);
+}
+vec2 point2(float t) {
+    t *= 0.62;
+    return vec2(0.88,0.5 + cos(t + 1.5708)*0.2);
+}
+
+vec4 solveFluid(sampler2D smp, vec2 uv, vec2 w, float time, vec3 mouse, vec3 lastMouse)
+{
+    const float K = 0.2;
+    const float v = 0.55;
+    
+    vec4 data = texture2D(smp, uv, 0.0);
+    vec4 tr = texture2D(smp, uv + vec2(w.x , 0), 0.0);
+    vec4 tl = texture2D(smp, uv - vec2(w.x , 0), 0.0);
+    vec4 tu = texture2D(smp, uv + vec2(0 , w.y), 0.0);
+    vec4 td = texture2D(smp, uv - vec2(0 , w.y), 0.0);
+    
+    vec3 dx = (tr.xyz - tl.xyz)*0.5;
+    vec3 dy = (tu.xyz - td.xyz)*0.5;
+    vec2 densDif = vec2(dx.z ,dy.z);
+    
+    data.z -= dt*dot(vec3(densDif, dx.x + dy.y) ,data.xyz); //density
+    vec2 laplacian = tu.xy + td.xy + tr.xy + tl.xy - 4.0*data.xy;
+    vec2 viscForce = vec2(v)*laplacian;
+    data.xyw = texture2D(smp, uv - dt*data.xy*w, 0.).xyw; //advection
+    
+    vec2 newForce = vec2(0);
+    #ifndef MOUSE_ONLY
+    #if 1
+    newForce.xy += 0.75*vec2(.0003, 0.00015)/(mag2(uv-point1(time))+0.0001);
+    newForce.xy -= 0.75*vec2(.0003, 0.00015)/(mag2(uv-point2(time))+0.0001);
+    #else
+    newForce.xy += 0.9*vec2(.0003, 0.00015)/(mag2(uv-point1(time))+0.0002);
+    newForce.xy -= 0.9*vec2(.0003, 0.00015)/(mag2(uv-point2(time))+0.0002);
+    #endif
+    #endif
+    
+    //if (mouse.z > 1. && lastMouse.z > 1.)             //取消判定，滑鼠才能作用
+    //{
+        vec2 vv = clamp(vec2(mouse.xy*w - lastMouse.xy*w)*400., -6., 6.);
+        newForce.xy += .001/(mag2(uv - mouse.xy*w)+0.001)*vv;
+        //newForce.xy += 0.003/(mag2(uv - mouse.xy*w)+0.003)*vv; //效果好
+        //newForce.xy += 0.005/(length(uv - mouse.xy*w)+0.005)*vv; //效果差
+    //}
+    
+    data.xy += dt*(viscForce.xy - K/dt*densDif + newForce); //update velocity
+    data.xy = max(vec2(0), abs(data.xy)-1e-4)*sign(data.xy); //linear velocity decay
+    
+    #ifdef USE_VORTICITY_CONFINEMENT
+    data.w = (tr.y - tl.y - tu.x + td.x);
+    vec2 vort = vec2(abs(tu.w) - abs(td.w), abs(tl.w) - abs(tr.w));
+    vort *= VORTICITY_AMOUNT/length(vort + 1e-9)*data.w;
+    data.xy += vort;
+    #endif
+    
+    data.y *= smoothstep(.5,.48,abs(uv.y-0.5)); //Boundaries
+    
+    data = clamp(data, vec4(vec2(-10), 0.5 , -10.), vec4(vec2(10), 3.0 , 10.));
+    
+    return data;
+}
+
+//Chimera's Breath
+//by nimitz 2018 (twitter: @stormoid)
+//see Common tab for fluid simulation code
+
+float length2(vec2 p){return dot(p,p);}
+mat2 mm2(in float a){float c = cos(a), s = sin(a);return mat2(c,s,-s,c);}
+
+vec3 getPalette(float x, vec3 c1, vec3 c2, vec3 p1, vec3 p2)
+{
+    float x2 = fract(x/2.0);
+    x = fract(x);   
+    mat3 m = mat3(c1, p1, c2);
+    mat3 m2 = mat3(c2, p2, c1);
+    float omx = 1.0-x;
+    vec3 pws = vec3(omx*omx, 2.0*omx*x, x*x);
+    return clamp(mix(m*pws, m2*pws, step(x2,0.5)),0.,1.);
+}
+
+vec4 pal(float x)
+{
+    vec3 pal = getPalette(-x, vec3(0.2, 0.5, .7), vec3(.9, 0.4, 0.1), vec3(1., 1.2, .5), vec3(1., -0.4, -.0));
+    return vec4(pal, 1.);
+}
+
+vec4 pal2(float x)
+{
+    vec3 pal = getPalette(-x, vec3(0.4, 0.3, .5), vec3(.9, 0.75, 0.4), vec3(.1, .8, 1.3), vec3(1.25, -0.1, .1));
+    return vec4(pal, 1.);
+}
+
+//======2nd FBO==============
+vec4 colorFluid(vec2 uv, vec2 w, vec2 mo)
+{
+    vec2 velo = texture2D(u_buffer0, uv, 0.).xy;
+    vec4 col = texture2D(u_buffer1, uv - dt*velo*w*3., 0.); //advection
+    //if (gl_FragCoord.y < 1. && gl_FragCoord.x < 1.)
+    //    col = vec4(0.);
+    
+    vec4 lastMouse = texture2D(u_buffer1, vec2(0.,0.), 0.); //是否讀不到舊滑鼠data
+    //if (iMouse.z > 1. && lastMouse.z > 1.)                //取消判定，滑鼠才能作用
+    //{
+        //float str = smoothstep(-.5,1.,length(mo - lastMouse.xy/iResolution.xy));
+        float str = smoothstep(-0.2,0.2,length(mo - lastMouse.xy/iResolution.xy));
+        //col += str*0.0009/(pow(length(uv - mo),1.7)+0.002)*pal2(-iTime*0.7);
+        col += 1.0*str*0.0003/(pow(length(uv - mo),1.7)+0.002)*pal2(-iTime*0.7);
+    //}
+    
+    
+    #ifndef MOUSE_ONLY
+    col += .0025/(0.0005+pow(length(uv - point1(iTime)),1.75))*dt*0.12*pal(iTime*0.05 - .0);
+    col += .0025/(0.0005+pow(length(uv - point2(iTime)),1.75))*dt*0.12*pal2(iTime*0.05 + 0.675);
+    #endif
+    
+    col = clamp(col, 0.,5.);
+    col = max(col - (0.0001 + col*0.004)*.5, 0.); //decay
+    return col;
+}
+
+void main()
+{
+    vec2 uv = gl_FragCoord.xy/iResolution.xy;
+    vec2 w = 1.0/iResolution.xy;
+    vec2 mo = iMouse.xy / iResolution.xy; //2nd FBO
+
+    //WebGL FBO 使用方式
+    #if defined( BUFFER_0 )
+        //vec4 lastMouse = texelFetch(iChannel0, ivec2(0,0), 0);
+        vec4 lastMouse = texture2D(u_buffer0, vec2(0.0,0.0));//是否讀不到舊滑鼠data？
+        vec4 data = solveFluid(u_buffer0, uv, w, iTime, iMouse.xyz, lastMouse.xyz);
+        if (iTime < 1.){
+        data = vec4(0.5,0,0,0);}
+        if (gl_FragCoord.y < 5.) data = iMouse;
+        gl_FragColor = data;
+
+    #elif defined (BUFFER_1)
+    
+        vec4 data2=colorFluid(uv, w, mo);
+        if (iTime < 1.){
+        data2 = vec4(0.);}
+        if (gl_FragCoord.y < 5.) data2 = iMouse;
+        gl_FragColor = data2;
+    #else
+        gl_FragColor = texture2D(u_buffer1, uv);
+    #endif
+}
+" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+</div>
+
+<div class="row">
+	<!--15_opticalFlow-->
+    <div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="15_opticalFlow.frag" target="_blank" title="opticalFlow"><canvas class="glslCanvas" data-fragment-url="15_opticalFlow.frag" width="800" height="600" data-textures="data/moon.jpg, data/pina.mp4"></canvas></a>
+		-->
+		
+		<a class="s2" href="15_opticalFlow.frag" target="_blank" title="opticalFlow"><canvas class="glslCanvas" data-fragment="// Author: CMH
+// Title: Learning Shaders-Optical Flow (not work!)
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+uniform sampler2D u_tex0;
+uniform sampler2D u_tex1;
+uniform sampler2D u_buffer0;
+uniform sampler2D u_buffer1;
+
+vec4 opticalFlow(sampler2D src_c_img, sampler2D src_p_img, vec2 uv)
+{
+float scale=9.0;
+float offset=0.01; 
+float threshold=0.03;
+float lambda=0.01;
+
+	//vec2 	uv = gl_FragCoord.xy/iResolution.xy;
+	vec2 	pos = uv;
+	vec2	off_x = vec2(offset, 0.0);
+	vec2	off_y = vec2(0.0, offset);
+	
+	//get the difference
+	float 	scr_dif, gradx, grady;
+	scr_dif =	texture2D(src_p_img, pos).x - texture2D(src_c_img, pos).x;
+	
+	//calculate the gradient
+	gradx =	texture2D(src_p_img, pos + off_x).x - texture2D(src_p_img, pos - off_x).x;
+	gradx +=	texture2D(src_c_img, pos + off_x).x - texture2D(src_c_img, pos - off_x).x;
+	
+	grady =	texture2D(src_p_img, pos + off_y).x - texture2D(src_p_img, pos - off_y).x;
+	grady +=	texture2D(src_c_img, pos + off_y).x - texture2D(src_c_img, pos - off_y).x;
+	
+	float gradmag = sqrt((gradx*gradx)+(grady*grady)+lambda);
+	
+	float vxd = scr_dif*(gradx/gradmag);
+	float vyd = scr_dif*(grady/gradmag);
+		
+	float xout = 0.0;
+	if (abs(vxd) > threshold) xout = (vxd - threshold) * -scale; 
+	float yout = 0.0;
+	if (abs(vyd) > threshold) yout = (vyd - threshold) * -scale; 
+	
+	return vec4(xout, yout, 0.0, 1.0);
+}
+
+
+void main() {
+    vec2 st = gl_FragCoord.xy/u_resolution.xy;				//screen coordinate
+    vec3 color = texture2D(u_tex1, st).rgb;
+    //vec3 luma= vec3(0.21*color.r + 0.72*color.g + 0.07*color.b);  //perceptually relevant
+    vec3 luma= vec3(color.r);
+    
+    #if defined( BUFFER_0 )
+    	gl_FragColor = vec4(luma, 1.0);
+    #elif defined( BUFFER_1 )
+    	gl_FragColor = texture2D(u_buffer0, st);
+    #else
+        gl_FragColor = opticalFlow(u_tex1, u_buffer1, st);//texture2D(u_buffer0, st);
+    #endif
+}
+
+
+" width="800" height="600" data-textures="data/moon.jpg, data/pina.mp4"></canvas></a>
+	</div>
+	
+	<!--20_ProteanClouds-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="20_ProteanClouds.frag" target="_blank" title="ProteanClouds"><canvas class="glslCanvas" data-fragment-url="20_ProteanClouds.frag" width="800" height="600" data-textures="data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="20_ProteanClouds.frag" target="_blank" title="ProteanClouds"><canvas class="glslCanvas" data-fragment="
+//Author: Created by  nimitz in 2019-05-27
+//Title: Protean clouds @ shadertoy
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+float iTime=u_time;			    		//更改 shadertoy->glsl editor  
+vec2 iResolution=u_resolution;          //更改 shadertoy->glsl editor 
+vec2 iMouse=u_mouse;					//更改 shadertoy->glsl editor
+
+
+
+
+
+// Protean clouds by nimitz (twitter: @stormoid)
+// https://www.shadertoy.com/view/3l23Rh
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+// Contact the author for other licensing options
+
+/*
+	Technical details:
+
+	The main volume noise is generated from a deformed periodic grid, which can produce
+	a large range of noise-like patterns at very cheap evalutation cost. Allowing for multiple
+	fetches of volume gradient computation for improved lighting.
+
+	To further accelerate marching, since the volume is smooth, more than half the the density
+	information isn't used to rendering or shading but only as an underlying volume	distance to 
+	determine dynamic step size, by carefully selecting an equation	(polynomial for speed) to 
+	step as a function of overall density (not necessarialy rendered) the visual results can be 
+	the	same as a naive implementation with ~40% increase in rendering performance.
+
+	Since the dynamic marching step size is even less uniform due to steps not being rendered at all
+	the fog is evaluated as the difference of the fog integral at each rendered step.
+
+*/
+
+mat2 rot(in float a){float c = cos(a), s = sin(a);return mat2(c,s,-s,c);}
+const mat3 m3 = mat3(0.33338, 0.56034, -0.71817, -0.87887, 0.32651, -0.15323, 0.15162, 0.69596, 0.61339)*1.93;
+float mag2(vec2 p){return dot(p,p);}
+float linstep(in float mn, in float mx, in float x){ return clamp((x - mn)/(mx - mn), 0., 1.); }
+float prm1 = 0.;
+vec2 bsMo = vec2(0);
+
+vec2 disp(float t){ return vec2(sin(t*0.22)*1., cos(t*0.175)*1.)*2.; }
+
+vec2 map(vec3 p)
+{
+    vec3 p2 = p;
+    p2.xy -= disp(p.z).xy;
+    p.xy *= rot(sin(p.z+iTime)*(0.1 + prm1*0.05) + iTime*0.09);
+    float cl = mag2(p2.xy);
+    float d = 0.;
+    p *= .61;
+    float z = 1.;
+    float trk = 1.;
+    float dspAmp = 0.1 + prm1*0.2;
+    for(int i = 0; i < 5; i++)
+    {
+		p += sin(p.zxy*0.75*trk + iTime*trk*.8)*dspAmp;
+        d -= abs(dot(cos(p), sin(p.yzx))*z);
+        z *= 0.57;
+        trk *= 1.4;
+        p = p*m3;
+    }
+    d = abs(d + prm1*3.)+ prm1*.3 - 2.5 + bsMo.y;
+    return vec2(d + cl*.2 + 0.25, cl);
+}
+
+vec4 render( in vec3 ro, in vec3 rd, float time )
+{
+	vec4 rez = vec4(0);
+    const float ldst = 8.;
+	vec3 lpos = vec3(disp(time + ldst)*0.5, time + ldst);
+	float t = 1.5;
+	float fogT = 0.;
+	for(int i=0; i<130; i++)
+	{
+		if(rez.a > 0.99)break;
+
+		vec3 pos = ro + t*rd;
+        vec2 mpv = map(pos);
+		float den = clamp(mpv.x-0.3,0.,1.)*1.12;
+		float dn = clamp((mpv.x + 2.),0.,3.);
+        
+		vec4 col = vec4(0);
+        if (mpv.x > 0.6)
+        {
+        
+            col = vec4(sin(vec3(5.,0.4,0.2) + mpv.y*0.1 +sin(pos.z*0.4)*0.5 + 1.8)*0.5 + 0.5,0.08);
+            col *= den*den*den;
+			col.rgb *= linstep(4.,-2.5, mpv.x)*2.3;
+            float dif =  clamp((den - map(pos+.8).x)/9., 0.001, 1. );
+            dif += clamp((den - map(pos+.35).x)/2.5, 0.001, 1. );
+            col.xyz *= den*(vec3(0.005,.045,.075) + 1.5*vec3(0.033,0.07,0.03)*dif);
+        }
+		
+		float fogC = exp(t*0.2 - 2.2);
+		col.rgba += vec4(0.06,0.11,0.11, 0.1)*clamp(fogC-fogT, 0., 1.);
+		fogT = fogC;
+		rez = rez + col*(1. - rez.a);
+		t += clamp(0.5 - dn*dn*.05, 0.09, 0.3);
+	}
+	return clamp(rez, 0.0, 1.0);
+}
+
+float getsat(vec3 c)
+{
+    float mi = min(min(c.x, c.y), c.z);
+    float ma = max(max(c.x, c.y), c.z);
+    return (ma - mi)/(ma+ 1e-7);
+}
+
+//from my Will it blend shader (https://www.shadertoy.com/view/lsdGzN)
+vec3 iLerp(in vec3 a, in vec3 b, in float x)
+{
+    vec3 ic = mix(a, b, x) + vec3(1e-6,0.,0.);
+    float sd = abs(getsat(ic) - mix(getsat(a), getsat(b), x));
+    vec3 dir = normalize(vec3(2.*ic.x - ic.y - ic.z, 2.*ic.y - ic.x - ic.z, 2.*ic.z - ic.y - ic.x));
+    float lgt = dot(vec3(1.0), ic);
+    float ff = dot(dir, normalize(ic));
+    ic += 1.5*dir*sd*ff*lgt;
+    return clamp(ic,0.,1.);
+}
+
+void main()
+{	
+	vec2 q = gl_FragCoord.xy/iResolution.xy;
+    vec2 p = (gl_FragCoord.xy - 0.5*iResolution.xy)/iResolution.y;
+    bsMo = (iMouse.xy - 0.5*iResolution.xy)/iResolution.y;
+    
+    float time = iTime*3.;
+    vec3 ro = vec3(0,0,time);
+    
+    ro += vec3(sin(iTime)*0.5,sin(iTime*1.)*0.,0);
+        
+    float dspAmp = .85;
+    ro.xy += disp(ro.z)*dspAmp;
+    float tgtDst = 3.5;
+    
+    vec3 target = normalize(ro - vec3(disp(time + tgtDst)*dspAmp, time + tgtDst));
+    ro.x -= bsMo.x*2.;
+    vec3 rightdir = normalize(cross(target, vec3(0,1,0)));
+    vec3 updir = normalize(cross(rightdir, target));
+    rightdir = normalize(cross(updir, target));
+	vec3 rd=normalize((p.x*rightdir + p.y*updir)*1. - target);
+    rd.xy *= rot(-disp(time + 3.5).x*0.2 + bsMo.x);
+    prm1 = smoothstep(-0.4, 0.4,sin(iTime*0.3));
+	vec4 scn = render(ro, rd, time);
+		
+    vec3 col = scn.rgb;
+    col = iLerp(col.bgr, col.rgb, clamp(1.-prm1,0.05,1.));
+    
+    col = pow(col, vec3(.55,0.65,0.6))*vec3(1.,.97,.9);
+
+    col *= pow( 16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y), 0.12)*0.7+0.3; //Vign
+    
+	gl_FragColor = vec4( col, 1.0 );
+}" width="800" height="600" data-textures="data/Taipei101_1.jpg"></canvas></a>
+	</div>
+	
+	<!--21_perlinSeaCloud-->
+	<div class="col-m-6 col-4">
+		<!--
+		<a class="s2" href="21_perlinSeaCloud.frag" target="_blank" title="perlinSeaCloud"><canvas class="glslCanvas" data-fragment-url="21_perlinSeaCloud.frag" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+		-->
+		
+		<a class="s2" href="21_perlinSeaCloud.frag" target="_blank" title="perlinSeaCloud"><canvas class="glslCanvas" data-fragment="
+// Author: CMH
+// Title: 20180125_杉本博司模擬_v1.B (瞭解perlin+raymarch)A.qtz
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+float iGlobalTime=u_time;			    //更改 shadertoy->glsl editor  
+vec2 iResolution=u_resolution;		//更改 shadertoy->glsl editor 
+vec3 iMouse=vec3(u_mouse.xy, 0.0);//更改 shadertoy->glsl editor
+//uniform sampler2D iChannel0;		//更改
+//vec2 fragCoord = gl_FragCoord.xy;	//更改
+
+
+
+// ———————————————————————————————————————————————
+// ———————————————————————————————————————————————
+// GLSL textureless classic 3D noise cnoise,
+// with an RSL-style periodic variant pnoise.
+// Author:  Stefan Gustavson (stefan.gustavson@liu.se)
+// Version: 2011-10-11
+// Many thanks to Ian McEwan of Ashima Arts for the
+// ideas for permutation and gradient selection.
+// Copyright (c) 2011 Stefan Gustavson. All rights reserved.
+// Distributed under the MIT license. See LICENSE file.
+// https://github.com/ashima/webgl-noise
+
+vec3 mod289(vec3 x)
+{
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 mod289(vec4 x)
+{
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 permute(vec4 x)
+{
+  return mod289(((x*34.0)+1.0)*x);
+}
+
+vec4 taylorInvSqrt(vec4 r)
+{
+  return 1.79284291400159 - 0.85373472095314 * r;
+}
+
+vec3 fade(vec3 t) {
+  return t*t*t*(t*(t*6.0-15.0)+10.0);
+}
+
+// Classic Perlin noise
+float cnoise(vec3 P)
+{
+  vec3 Pi0 = floor(P); // Integer part for indexing
+  vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+  Pi0 = mod289(Pi0);
+  Pi1 = mod289(Pi1);
+  vec3 Pf0 = fract(P); // Fractional part for interpolation
+  vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+  vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+  vec4 iy = vec4(Pi0.yy, Pi1.yy);
+  vec4 iz0 = Pi0.zzzz;
+  vec4 iz1 = Pi1.zzzz;
+
+  vec4 ixy = permute(permute(ix) + iy);
+  vec4 ixy0 = permute(ixy + iz0);
+  vec4 ixy1 = permute(ixy + iz1);
+
+  vec4 gx0 = ixy0 * (1.0 / 7.0);
+  vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+  gx0 = fract(gx0);
+  vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+  vec4 sz0 = step(gz0, vec4(0.0));
+  gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+  gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+  vec4 gx1 = ixy1 * (1.0 / 7.0);
+  vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+  gx1 = fract(gx1);
+  vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+  vec4 sz1 = step(gz1, vec4(0.0));
+  gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+  gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+  vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+  vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+  vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+  vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+  vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+  vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+  vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+  vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+  vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+  g000 *= norm0.x;
+  g010 *= norm0.y;
+  g100 *= norm0.z;
+  g110 *= norm0.w;
+  vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+  g001 *= norm1.x;
+  g011 *= norm1.y;
+  g101 *= norm1.z;
+  g111 *= norm1.w;
+
+  float n000 = dot(g000, Pf0);
+  float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+  float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+  float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+  float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+  float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+  float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+  float n111 = dot(g111, Pf1);
+
+  vec3 fade_xyz = fade(Pf0);
+  vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+  vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
+  return 2.2 * n_xyz;
+}
+
+//fractal self-similarity 
+float fnoise(vec3 P)
+{
+float sum=cnoise(P-0.05*iGlobalTime)+0.8*cnoise(1.5*P)+0.4*cnoise(3.0*P)+0.2*cnoise(8.0*P-0.1*iGlobalTime);
+return sum;
+}
+
+// ———————————————————————————————————————————————
+// ———————————————————————————————————————————————
+
+
+// Seascape by Alexander Alekseev aka TDM - 2014
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
+const int NUM_STEPS = 8;
+const float PI    = 3.1415;
+const float EPSILON = 1e-3;
+float EPSILON_NRM = 0.1 / iResolution.x;
+
+// sea
+const int ITER_GEOMETRY = 3;
+const int ITER_FRAGMENT = 5;
+const float SEA_HEIGHT = 0.6; //數值小浪小，風平浪靜
+const float SEA_CHOPPY = 4.0; //數值小smooth
+const float SEA_SPEED = 0.8;
+const float SEA_FREQ = 0.16;  //數值小波少，風平浪靜
+const vec3 SEA_BASE = vec3(0.0, 0.4, 0.7);  //vec3(0.1,0.19,0.22);
+const vec3 SEA_WATER_COLOR = vec3(1.0);   //vec3(0.8,0.9,0.6)*1.0;
+float SEA_TIME = iGlobalTime * SEA_SPEED;
+mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
+
+// math
+mat3 fromEuler(vec3 ang) {
+    vec2 a1 = vec2(sin(ang.x),cos(ang.x));
+    vec2 a2 = vec2(sin(ang.y),cos(ang.y));
+    vec2 a3 = vec2(sin(ang.z),cos(ang.z));
+    mat3 m;
+    m[0] = vec3(a1.y*a3.y+a1.x*a2.x*a3.x,a1.y*a2.x*a3.x+a3.y*a1.x,-a2.y*a3.x);
+  m[1] = vec3(-a2.y*a1.x,a1.y*a2.y,a2.x);
+  m[2] = vec3(a3.y*a1.x*a2.x+a1.y*a3.x,a1.x*a3.x-a1.y*a3.y*a2.x,a2.y*a3.y);
+  return m;
+}
+float hash( vec2 p ) {
+  float h = dot(p,vec2(127.1,311.7)); 
+    return fract(sin(h)*43758.5453123);
+}
+float noise( in vec2 p ) {
+    vec2 i = floor( p );
+    vec2 f = fract( p );  
+  vec2 u = f*f*(3.0-2.0*f);
+    return -1.0+2.0*mix( mix( hash( i + vec2(0.0,0.0) ), 
+                     hash( i + vec2(1.0,0.0) ), u.x),
+                mix( hash( i + vec2(0.0,1.0) ), 
+                     hash( i + vec2(1.0,1.0) ), u.x), u.y);
+}
+
+// lighting
+float diffuse(vec3 n,vec3 l,float p) {
+    return pow(dot(n,l) * 0.4 + 0.6,p);
+}
+float specular(vec3 n,vec3 l,vec3 e,float s) {    
+    float nrm = (s + 8.0) / (3.1415 * 8.0);
+    return pow(max(dot(reflect(e,n),l),0.0),s) * nrm;
+}
+
+// sky
+vec3 getSkyColor(vec3 e) {
+    e.y = max(e.y,0.0);
+    vec3 ret;
+    ret.x = pow(1.0-e.y,2.0);
+    ret.y = 1.0-e.y;
+    ret.z = 0.6+(1.0-e.y)*0.4;
+    return ret;
+}
+
+
+// sky by Perlin
+vec3 getSkyPerlin(vec3 e, int i) {
+     //e.y = max(e.y,0.0);
+     float den = 2.0; //雲之密集度，變動率提高兩倍，密度增加兩倍
+      vec3 q3= den *e;   
+  q3.y *=6.;    //雲之狹長形狀，y軸變動率是x軸的六倍
+  //vec3 q3= vec3(surfacePosition, 0.0); //平面
+     vec3 col = vec3(0.0);
+  //-------測試fractal————————
+  if     (i==0)
+    col = vec3( fnoise( 0.4*q3 ));        //fractal perlin noise
+  else if (i==1)
+    col = vec3((fnoise( 0.4*q3-0.12*SEA_TIME)));  //classical perlin noise
+  else if (i==2)
+    col = vec3(fnoise( 0.4*q3+ fnoise(0.6*q3)  ));  //二層遞廻perlin noise
+  else if (i==3)
+    col = vec3(fnoise( 1.2*q3+ fnoise(0.6*q3+ fnoise(0.2*q3-0.*SEA_TIME))));//三層遞廻perlin noise, 燃燒流動感
+  else if (i==4)
+    col = vec3(fnoise( 0.4*q3+ fnoise(0.6*q3+ fnoise(0.8*q3-0.*SEA_TIME))));//三層遞廻perlin noise, 結冰反射感
+  
+  //-------測試gradient————————
+  //col = vec3(cnoise( 0.4*q3+ cnoise(0.6*q3)   )); //二層遞廻perlin noise
+  //col = vec3(cnoise( 0.4*q3+ cnoise(0.6*q3+ cnoise(0.8*q3+0.2*SEA_TIME))));//三層遞廻perlin noise
+  //col = vec3(cnoise( 1.0*q3+ cnoise(4.0*q3+ cnoise(8.0*q3+0.6*SEA_TIME))));//Local move 時間影響最小的細節，水波紋感！
+  //col = vec3(cnoise( 1.0*q3+ cnoise(4.0*q3+ cnoise(8.0*q3))+0.6*SEA_TIME));//Global move 時間影響較大範圍，陰影推動感!
+  
+  vec3 col1 = vec3(0.0, 0.4, 0.7);    //藍雲vec3(0.0, 0.4, 0.7), 紫雲vec3(0.5, 0.2, 0.5);
+  vec3 col2 = vec3(1.0, 1.0, 1.0);      //白天vec3(1.0, 1.0, 1.0);
+  //vec3 col2 = getSkyColor(e, iSky);
+  vec3 colf = mix(col1, col2, col.x*0.5+0.5); //noise[-1,1] —> [0,1]
+    return colf;
+}
+
+
+
+// sea
+float sea_octave(vec2 uv, float choppy) {
+    uv += noise(uv);        
+    vec2 wv = 1.0-abs(sin(uv));
+    vec2 swv = abs(cos(uv));    
+    wv = mix(wv,swv,wv);
+    return pow(1.0-pow(wv.x * wv.y,0.65),choppy);
+}
+
+/*
+float map(vec3 p) {
+    float freq = SEA_FREQ;
+    float amp = SEA_HEIGHT;
+    float choppy = SEA_CHOPPY;
+    vec2 uv = p.xz; uv.x *= 0.75;//數值越大波數越密集
+    
+    float d, h = 0.0;    
+    for(int i = 0; i < ITER_GEOMETRY; i++) {        
+      d = sea_octave((uv+SEA_TIME)*freq,choppy);
+      d += sea_octave((uv-SEA_TIME)*freq,choppy);
+        h += d * amp;        
+      uv *= octave_m; freq *= 1.9; amp *= 0.22;
+        choppy = mix(choppy,1.0,0.2);   //choopy由4.0下降，但恆大於1.0
+    }
+    return p.y - h;
+}
+
+float map_detailed(vec3 p) {
+    float freq = SEA_FREQ;
+    float amp = SEA_HEIGHT;
+    float choppy = SEA_CHOPPY;
+    vec2 uv = p.xz; uv.x *= 0.75;
+    
+    float d, h = 0.0;    
+    for(int i = 0; i < ITER_FRAGMENT; i++) {        
+      d = sea_octave((uv+SEA_TIME)*freq,choppy);
+      d += sea_octave((uv-SEA_TIME)*freq,choppy);
+        h += d * amp;        
+      uv *= octave_m; freq *= 1.9; amp *= 0.22;
+        choppy = mix(choppy,1.0,0.2);
+    }
+    return p.y - h;
+}
+
+*/
+
+//Perlin衍生海模型 
+float map(vec3 p) {
+    float freq = SEA_FREQ;
+    float amp = SEA_HEIGHT;
+    float choppy = SEA_CHOPPY;
+    vec2 uv = p.xz; uv.x *= 0.75;//數值越大波數越密集
+    
+    float d, h = 0.0;
+    vec3 q3=p*0.1;
+    q3.y *=1.1;    
+  h=((fnoise( 0.4*q3-0.12*SEA_TIME)));
+    return p.y - h;
+}
+
+
+vec3 getSeaColor(vec3 p, vec3 n, vec3 l, vec3 eye, vec3 dist) {  
+    float fresnel = 1.0 - max(dot(n,-eye),0.0);
+    fresnel = pow(fresnel,3.0) * 0.65;
+        
+    vec3 reflected = getSkyColor(reflect(eye,n));    
+    vec3 refracted = SEA_BASE + diffuse(n,l,80.0) * SEA_WATER_COLOR * 0.12; 
+    
+    vec3 color = mix(refracted,reflected,fresnel);
+    
+    float atten = max(1.0 - dot(dist,dist) * 0.001, 0.0);
+    color += SEA_WATER_COLOR * (p.y - SEA_HEIGHT) * 0.18 * atten;
+    
+    color += vec3(specular(n,l,eye,60.0));
+    
+    return color;
+}
+
+// tracing
+vec3 getNormal(vec3 p, float eps) {
+    vec3 n;
+    n.y = map(p);             //n.y = map_detailed(p);    
+    n.x = map(vec3(p.x+eps,p.y,p.z)) - n.y; //n.x = map_detailed(vec3(p.x+eps,p.y,p.z)) - n.y;
+    n.z = map(vec3(p.x,p.y,p.z+eps)) - n.y; //n.z = map_detailed(vec3(p.x,p.y,p.z+eps)) - n.y;
+    n.y = eps;
+    return normalize(n);
+}
+
+float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {  
+    float tm = 0.0;
+    float tx = 1000.0;    
+    float hx = map(ori + dir * tx);
+    if(hx > 0.0) return tx;   
+    float hm = map(ori + dir * tm);    
+    float tmid = 0.0;
+    for(int i = 0; i < NUM_STEPS; i++) {
+        tmid = mix(tm,tx, hm/(hm-hx));                   
+        p = ori + dir * tmid;                   
+      float hmid = map(p);
+    if(hmid < 0.0) {
+          tx = tmid;
+            hx = hmid;
+        } else {
+            tm = tmid;
+            hm = hmid;
+        }
+    }
+    return tmid;
+}
+
+// main
+void main() {
+  vec2 uv = gl_FragCoord.xy / iResolution.xy;//更改 shadertoy->glsl editor
+    uv = uv * 2.0 - 1.0;
+    uv.x *= iResolution.x / iResolution.y;
+    uv.y *= -1.0;//更改 shadertoy->glsl editor    
+    float time = iGlobalTime * 0.3; //time = iGlobalTime * 0.3 + iMouse.x*0.01
+        
+    // ray
+    //vec3 ang = vec3(3.14, 0.15*sin(0.1*time), 0.0);     //不旋轉
+    vec3 ang = vec3(3.14, 0.0, 0.0);  // [x, y, z] = [rotate ,tilt ,pan]
+    //vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);
+    
+    vec3 ori = vec3(0.0,3.5,time*5.0);    //timescale正值(5.0)浪遠離，負值(-5.0)浪趨近，y=3.5代表camera高低
+    vec3 dir = normalize(vec3(uv.xy,-2.0)); //camera位於正Z軸，ray dir朝向負Z軸
+    dir.z += length(uv) * 0.3*sin(0.1*time);        //*廣角調整，影響海平面的曲度 
+    dir = normalize(dir) * fromEuler(ang);  //座標軸旋轉，rotation ang[x, y, z]數值轉為
+    
+    // tracing
+    vec3 p;
+    heightMapTracing(ori,dir,p);      //注意 out vec3 p，改變p
+    vec3 dist = p - ori;
+    vec3 n = getNormal(p, dot(dist,dist) * EPSILON_NRM);
+    vec3 light = normalize(vec3(0.0,1.0,0.8));  //+0.8無反光面，-0.8有反光面，正值表示光線由前方射入鏡頭，故波浪無reflection
+             
+    // color
+    vec3 color = mix(
+        //getSkyPerlin以Raymarch運算，但尚無體積感
+        getSkyPerlin(dir, 1),       //初始預設getSkyColor(dir)
+        getSeaColor(p,n,light,dir,dist),
+      pow(smoothstep(0.0,-0.05,dir.y),0.3));
+        
+    // post
+  gl_FragColor = vec4(pow(color,vec3(0.75)), 1.0); //power值越小越明亮，值越大越深暗
+}
+
+" width="800" height="600" data-textures="data/moon.jpg, data/Taipei101_1.jpg"></canvas></a>
+	</div>
+</div>
+</section>
+
+<!--footer-->
+<footer>
+&copy;2022 演算美學實驗室 | The Computing Aesthetics Lab
+</footer>
+
+</body>
+	
+<!--glslCanvas-->
+<script>
+    var canvas = document.getElementsByClassName(glslCanvas);
+    var sandbox = new GlslCanvas(canvas);
+    var texCounter = 0;
+    var sandbox_content = "";
+    var sandbox_title = "";
+    var sandbox_author = "";
+    var sandbox_thumbnail = "";
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+</script>
+	
+</html>
