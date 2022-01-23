@@ -90,6 +90,7 @@ nav{
 	text-align:center;
 	background:#777;
 	font-size:18px;
+	display: none;
 }
 
 nav li{
