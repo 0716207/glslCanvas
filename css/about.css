@@ -90,6 +90,11 @@ nav{
 	text-align:center;
 	background:#777;
 	font-size:18px;
+	
+	position: -webkit-sticky; /*Safari，有前綴詞是因為要特別給某一種瀏覽器使用*/
+	position: sticky; /*表頭*/
+	top: 0; /*滑到他的時候會頂在最上面*/
+	z-index:2000;
 }
 
 nav li{

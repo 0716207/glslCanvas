@@ -90,6 +90,11 @@ nav{
 	text-align:center;
 	background:#777;
 	font-size:18px;
+	
+	position: -webkit-sticky; /*Safari，有前綴詞是因為要特別給某一種瀏覽器使用*/
+	position: sticky; /*表頭*/
+	top: 0; /*滑到他的時候會頂在最上面*/
+	z-index:2000;
 }
 
 nav li{
@@ -97,7 +102,7 @@ nav li{
 	border-bottom:solid rgba(242, 242, 242, 1) 1px;
 }
 
-nav li a{
+nav li span{
 	display: inline-block;
 	width:100%;
 	padding:20px 30px;
@@ -106,8 +111,9 @@ nav li a{
 	transition: 0.3s;
 }
 
-nav li a:hover{
+nav li span:hover{
 	background:rgba(207, 181, 59, 1);
+	cursor: pointer;
 }
 
 .ch_bg{
