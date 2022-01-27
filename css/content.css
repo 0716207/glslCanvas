@@ -128,6 +128,10 @@ section{
 	text-align:center;
 	line-height:2.5em;
 	font-size:1.1em;
+	
+	/*fade to another page*/
+	opacity: 0;
+   	transition: opacity 1s;
 }
 
 section img{

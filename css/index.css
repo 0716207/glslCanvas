@@ -16,6 +16,17 @@
   src: url(隸書繁.ttf);
 }
 
+::-moz-selection{ /*Firefox*/
+	color: #111;
+	background: #fff;
+}
+
+::selection{
+	color: #111;
+	background: #fff;
+}
+
+
 /****************************************************/
 
 *{
@@ -27,6 +38,10 @@ body{
 	font-family: typewriter, chinese;
 	color: #fff;
 	background:#101515;
+	
+	/*fade to another page*/
+	opacity: 0;
+   	transition: opacity 1s;
 }
 
 /* header */
