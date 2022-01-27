@@ -50,6 +50,10 @@ header{
 	margin:20px;
 }
 
+canvas:hover{
+	cursor: pointer;
+}
+
 /*footer*/
 footer{
 	padding:20px 0px;

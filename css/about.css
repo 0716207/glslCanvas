@@ -97,7 +97,7 @@ nav li{
 	border-bottom:solid rgba(242, 242, 242, 1) 1px;
 }
 
-nav li a{
+nav li span{
 	display: inline-block;
 	width:100%;
 	padding:20px 30px;
@@ -106,8 +106,9 @@ nav li a{
 	transition: 0.3s;
 }
 
-nav li a:hover{
+nav li span:hover{
 	background:rgba(207, 181, 59, 1);
+	cursor: pointer;
 }
 
 .ch_bg{
