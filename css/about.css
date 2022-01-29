@@ -88,7 +88,6 @@ nav{
 	width:100%;
 	margin:auto;
 	text-align:center;
-	background:#777;
 	font-size:18px;
 	
 	position: -webkit-sticky; /*Safari，有前綴詞是因為要特別給某一種瀏覽器使用*/
@@ -112,7 +111,7 @@ nav li span{
 }
 
 nav li span:hover{
-	background:rgba(207, 181, 59, 1);
+	color:rgba(207, 181, 59, 1);
 	cursor: pointer;
 }
 
@@ -132,12 +131,14 @@ section{
 	/*fade to another page*/
 	opacity: 0;
    	transition: opacity 1s;
+	font-family: 'Zen Kurenaido', sans-serif;
 }
 
 section img{
 	width:100%;
 	border-radius:20%;	
 }
+
 
 /*footer*/
 footer{
