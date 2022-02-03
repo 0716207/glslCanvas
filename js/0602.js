@@ -21,6 +21,7 @@ $(document).ready(function(){
     });
 	
 	//single
+    /*
     $(".s2").fancybox({
         openEffect    : 'elastic',//彈出
         closeEffect   : 'elastic',
@@ -31,7 +32,7 @@ $(document).ready(function(){
             }
         }
     });
-
+    */
 });
 
 
