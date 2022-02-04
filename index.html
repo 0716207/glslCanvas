@@ -8,7 +8,7 @@
 	<!--js-->
 	<script type="text/javascript" src="js/jquery-3.6.0.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
-	<script type="text/javascript" src="js/0602.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
 	<!--font awesome-->
 	<script src="https://kit.fontawesome.com/bade478ead.js" crossorigin="anonymous"></script>
 	<!-- Add fancyBox -->
@@ -21,7 +21,7 @@
 	
 <body>
 <!--breathingGlow.frag-->
-<span onclick="transitionToPage('ABOUT.html')"><canvas id="glslCanvas" data-fragment-url="11_breathingGlow.frag" width="800" height="600" data-textures="data/moon.jpeg, data/Taipei101_1.jpg"></canvas></span>
+<span onclick="transitionToPage('ABOUT.html')"><canvas id="glslCanvas" data-fragment-url="11_breathingGlow.frag" width="800" height="600" data-textures="data/moon.jpeg, data/Taipei101_1.jpeg"></canvas></span>
 </body>
 
 	
@@ -37,18 +37,4 @@
     canvas.style.width = '100%';
     canvas.style.height = '100%';
 </script>	
-
-<script>
-	// fade to another page
-	window.transitionToPage = function(href) {
-    document.querySelector('section').style.opacity = 0
-    setTimeout(function() { 
-        window.location.href = href
-    }, 500)
-	}
-
-	document.addEventListener('DOMContentLoaded', function(event) {
-		document.querySelector('section').style.opacity = 1
-	})
-</script>
 </html>
